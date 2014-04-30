@@ -2,13 +2,15 @@
 <html>
 <head>
     <title>Flask-SocketIO Test</title>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function(){
             var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
             socket.on('my response', function(msg) {
-                $('#log').append('<br>Received #' + msg.count + ': ' + msg.data);
+                $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg.data));
             });
             $('form#emit').submit(function(event) {
                 socket.emit('my event', {data: $('#emit_data').val()});
@@ -30,10 +32,16 @@
                 socket.emit('my room event', {room: $('#room_name').val(), data: $('#room_data').val()});
                 return false;
             });
+
+            var ps = io.connect('http://' + document.domain + ':' + location.port + '/ps');
+            ps.on('data', function(msg) {
+                $('#cpu').text(msg.processor).effect('highlight');
+            })
         });
     </script>
 </head>
 <body>
+    <!--
     <h1>Flask-SocketIO Test</h1>
     <h2>Send:</h2>
     <form id="emit" method='POST' action='#'>
@@ -57,6 +65,9 @@
         <input type="text" name="room_data" id="room_data" placeholder="Message">
         <input type="submit" value="Send to Room">
     </form>
+    -->
+    <h2>CPU</h2>
+    <div id="cpu">...</div>
     <h2>Receive:</h2>
     <div id="log"></div>
 </body>

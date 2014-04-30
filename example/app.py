@@ -70,6 +70,9 @@ def send_room_message(message):
 def test_connect():
     emit('my response', {'data': 'Connected', 'count': 0})
 
+@socketio.on('data', namespace='/ps')
+def ps_data(arg):
+    emit('data', arg, broadcast=True)
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
